@@ -35,6 +35,6 @@ public class Ticket {
     String requesterEmail;
     String assignedTo;
     LocalDateTime createdAt;
-    LocalDateTime updateAt;
+    LocalDateTime updatedAt;
 
 }

@@ -1,4 +1,4 @@
-INSERT INTO tickets (title, description, status, priority, requester_name, requester_email, assigned_to, created_at, update_at)
+INSERT INTO tickets (title, description, status, priority, requester_name, requester_email, assigned_to, created_at, updated_at)
 VALUES
 ('Falha no login do painel', 'O utilizador nao consegue aceder ao painel administrativo apos redefinir a palavra-passe.', 'OPEN', 'HIGH', 'Vitor Silva', 'vitor@email.com', 'Ana Souza', CURRENT_TIMESTAMP, NULL),
 ('Timeout na pagina de faturacao', 'O cliente reportou timeout ao gerar a fatura mensal no sistema.', 'IN_PROGRESS', 'MEDIUM', 'Carlos Lima', 'carlos@email.com', 'Bruno Costa', CURRENT_TIMESTAMP, NULL),

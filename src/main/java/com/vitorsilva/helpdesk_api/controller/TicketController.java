@@ -6,6 +6,8 @@ import com.vitorsilva.helpdesk_api.enums.TicketPriority;
 import com.vitorsilva.helpdesk_api.enums.TicketStatus;
 import com.vitorsilva.helpdesk_api.service.TicketService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,7 +17,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/tickets")
@@ -37,10 +38,11 @@ public class TicketController {
     }
 
     @GetMapping
-    public List<Ticket> findAllByFilter(
+    public Page<Ticket> findAllByFilter(
             @RequestParam(required = false) TicketStatus status,
-            @RequestParam(required = false) TicketPriority priority) {
+            @RequestParam(required = false) TicketPriority priority,
+            Pageable pageable) {
 
-        return ticketService.findAllByFilter(status, priority);
+        return ticketService.findAllByFilter(status, priority, pageable);
     }
 }

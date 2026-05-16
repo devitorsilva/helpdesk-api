@@ -6,10 +6,11 @@ import com.vitorsilva.helpdesk_api.enums.TicketPriority;
 import com.vitorsilva.helpdesk_api.enums.TicketStatus;
 import com.vitorsilva.helpdesk_api.exception.ResourceNotFoundException;
 import com.vitorsilva.helpdesk_api.repository.TicketRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 public class TicketService {
@@ -33,27 +34,27 @@ public class TicketService {
         return ticketRepository.save(newTicket);
     }
 
-    public List<Ticket> findAll(){
-        return ticketRepository.findAll();
+    public Page<Ticket> findAll(Pageable pageable){
+        return ticketRepository.findAll(pageable);
     }
 
     public Ticket findById(Long id){
         return ticketRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Ticket not found with id:" + id));
     }
 
-    public List<Ticket> findAllByFilter(TicketStatus status, TicketPriority priority) {
+    public Page<Ticket> findAllByFilter(TicketStatus status, TicketPriority priority, Pageable pageable) {
         if(status != null && priority != null){
-            return ticketRepository.findAllByStatusAndPriority(status,priority);
+            return ticketRepository.findAllByStatusAndPriority(status,priority,pageable);
         }
 
         if(status != null){
-            return ticketRepository.findAllByStatus(status);
+            return ticketRepository.findAllByStatus(status,pageable);
         }
 
         if(priority != null){
-            return ticketRepository.findAllByPriority(priority);
+            return ticketRepository.findAllByPriority(priority,pageable);
         }
 
-        return ticketRepository.findAll();
+        return ticketRepository.findAll(pageable);
     }
 }
