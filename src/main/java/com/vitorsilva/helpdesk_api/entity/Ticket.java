@@ -1,7 +1,7 @@
-package entity;
+package com.vitorsilva.helpdesk_api.entity;
 
-import enums.TicketPriority;
-import enums.TicketStatus;
+import com.vitorsilva.helpdesk_api.enums.TicketPriority;
+import com.vitorsilva.helpdesk_api.enums.TicketStatus;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;

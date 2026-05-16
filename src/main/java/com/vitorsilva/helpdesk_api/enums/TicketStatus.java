@@ -1,4 +1,4 @@
-package enums;
+package com.vitorsilva.helpdesk_api.enums;
 
 public enum TicketStatus {
     OPEN,
