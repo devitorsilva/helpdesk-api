@@ -15,7 +15,7 @@ public class CreateTicketRequest {
     private String title;
 
     @NotBlank(message = "Description is required")
-    @Size(min=10, max=500, message = "Description must be between 10 and 50 characters")
+    @Size(min=10, max=500, message = "Description must be between 10 and 500 characters")
     private String description;
 
     @NotNull(message = "Priorty is required")

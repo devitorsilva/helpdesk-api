@@ -1,6 +1,7 @@
 package com.vitorsilva.helpdesk_api.service;
 
 import com.vitorsilva.helpdesk_api.dto.CreateTicketRequest;
+import com.vitorsilva.helpdesk_api.dto.UpdateTicketRequest;
 import com.vitorsilva.helpdesk_api.entity.Ticket;
 import com.vitorsilva.helpdesk_api.enums.TicketPriority;
 import com.vitorsilva.helpdesk_api.enums.TicketStatus;
@@ -11,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 public class TicketService {
@@ -34,10 +36,6 @@ public class TicketService {
         return ticketRepository.save(newTicket);
     }
 
-    public Page<Ticket> findAll(Pageable pageable){
-        return ticketRepository.findAll(pageable);
-    }
-
     public Ticket findById(Long id){
         return ticketRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Ticket not found with id:" + id));
     }
@@ -56,5 +54,28 @@ public class TicketService {
         }
 
         return ticketRepository.findAll(pageable);
+    }
+
+    public Ticket update(Long id, UpdateTicketRequest updateTicketRequest){
+        Ticket ticket = this.findById(id);
+        if(updateTicketRequest.getDescription() != null){
+            ticket.setDescription(updateTicketRequest.getDescription());
+        }
+        if(updateTicketRequest.getTitle() != null){
+            ticket.setTitle(updateTicketRequest.getTitle());
+        }
+        if(updateTicketRequest.getStatus() != null){
+            ticket.setStatus(updateTicketRequest.getStatus());
+        }
+        if(updateTicketRequest.getPriority() != null){
+            ticket.setPriority(updateTicketRequest.getPriority());
+        }
+        if(updateTicketRequest.getAssignedTo() != null){
+            ticket.setAssignedTo(updateTicketRequest.getAssignedTo());
+        }
+
+        ticket.setUpdatedAt(LocalDateTime.now());
+
+        return ticketRepository.save(ticket);
     }
 }
