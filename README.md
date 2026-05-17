@@ -1,5 +1,10 @@
 # Helpdesk API
 
+![Java 17](https://img.shields.io/badge/Java-17-007396?logo=openjdk&logoColor=white)
+![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.5-6DB33F?logo=springboot&logoColor=white)
+![REST API](https://img.shields.io/badge/API-REST-0A66C2)
+![H2](https://img.shields.io/badge/Database-H2-1E4C8F)
+
 API REST de helpdesk construída com Spring Boot para gestão de tickets.
 
 ## Stack
@@ -18,6 +23,7 @@ API REST de helpdesk construída com Spring Boot para gestão de tickets.
 - Listar tickets com filtro por status e prioridade
 - Paginação
 - Atualização parcial com `PATCH`
+- Exclusão de ticket
 - Tratamento global de erros
 - Seed local com `data.sql`
 
@@ -27,6 +33,7 @@ API REST de helpdesk construída com Spring Boot para gestão de tickets.
 - `GET /tickets/{id}`
 - `GET /tickets?status=OPEN&priority=HIGH&page=0&size=10`
 - `PATCH /tickets/{id}`
+- `DELETE /tickets/{id}`
 
 ## Como rodar
 

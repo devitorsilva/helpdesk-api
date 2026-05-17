@@ -21,7 +21,7 @@ public class GlobalExceptionHandler {
         List<String> errors = exception.getBindingResult()
                 .getFieldErrors()
                 .stream()
-                .map(fieldError -> "Field: " + fieldError.getField() + " - " + fieldError.getDefaultMessage())
+                .map(fieldError -> fieldError.getDefaultMessage())
                 .toList();
 
         ErrorResponse errorResponse = new ErrorResponse();
