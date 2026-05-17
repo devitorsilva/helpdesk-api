@@ -9,6 +9,7 @@ import com.vitorsilva.helpdesk_api.exception.ResourceNotFoundException;
 import com.vitorsilva.helpdesk_api.repository.TicketRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -28,9 +29,11 @@ public class TicketService {
         newTicket.setTitle(request.getTitle());
         newTicket.setDescription(request.getDescription());
         newTicket.setPriority(request.getPriority());
+        newTicket.setPriorityOrder(request.getPriority().getOrder());
         newTicket.setRequesterName(request.getRequesterName());
         newTicket.setRequesterEmail(request.getRequesterEmail());
         newTicket.setStatus(TicketStatus.OPEN);
+        newTicket.setStatusOrder(newTicket.getStatusOrder());
         newTicket.setAssignedTo(request.getAssignedTo());
         newTicket.setCreatedAt(LocalDateTime.now());
 
@@ -67,9 +70,11 @@ public class TicketService {
         }
         if(updateTicketRequest.getStatus() != null){
             ticket.setStatus(updateTicketRequest.getStatus());
+            ticket.setStatusOrder(updateTicketRequest.getStatus().getOrder());
         }
         if(updateTicketRequest.getPriority() != null){
             ticket.setPriority(updateTicketRequest.getPriority());
+            ticket.setPriorityOrder(updateTicketRequest.getPriority().getOrder());
         }
         if(updateTicketRequest.getAssignedTo() != null){
             ticket.setAssignedTo(updateTicketRequest.getAssignedTo());

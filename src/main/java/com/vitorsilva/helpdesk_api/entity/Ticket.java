@@ -27,10 +27,15 @@ public class Ticket {
     Long id;
     String title;
     String description;
+
     @Enumerated(EnumType.STRING)
     TicketStatus status;
+    Integer statusOrder;
+
     @Enumerated(EnumType.STRING)
     TicketPriority priority;
+    Integer priorityOrder;
+
     String requesterName;
     String requesterEmail;
     String assignedTo;

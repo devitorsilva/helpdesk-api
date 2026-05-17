@@ -22,6 +22,8 @@ API REST de helpdesk construída com Spring Boot para gestão de tickets.
 - Buscar ticket por id
 - Listar tickets com filtro por status e prioridade
 - Paginação
+- Ordenação por colunas
+- Ordenação de negócio para prioridade e status
 - Atualização parcial com `PATCH`
 - Exclusão de ticket
 - Tratamento global de erros
@@ -31,7 +33,7 @@ API REST de helpdesk construída com Spring Boot para gestão de tickets.
 
 - `POST /tickets`
 - `GET /tickets/{id}`
-- `GET /tickets?status=OPEN&priority=HIGH&page=0&size=10`
+- `GET /tickets?status=OPEN&priority=HIGH&page=0&size=10&sort=title,asc`
 - `PATCH /tickets/{id}`
 - `DELETE /tickets/{id}`
 
@@ -61,7 +63,8 @@ API disponível em:
   "description": "O utilizador nao consegue aceder ao painel administrativo.",
   "priority": "HIGH",
   "requesterName": "Vitor Silva",
-  "requesterEmail": "vitor@email.com"
+  "requesterEmail": "vitor@email.com",
+  "assignedTo": "Ana Souza"
 }
 ```
 
@@ -79,4 +82,5 @@ API disponível em:
 
 - A aplicação usa H2 em memória para desenvolvimento.
 - Ao subir a aplicação, o `data.sql` carrega tickets de exemplo automaticamente.
+- `priorityOrder` e `statusOrder` são usados para suportar ordenação de negócio.
 - O CORS está liberado para `http://localhost:5173`.
