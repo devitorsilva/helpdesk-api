@@ -31,6 +31,7 @@ public class TicketService {
         newTicket.setRequesterName(request.getRequesterName());
         newTicket.setRequesterEmail(request.getRequesterEmail());
         newTicket.setStatus(TicketStatus.OPEN);
+        newTicket.setAssignedTo(request.getAssignedTo());
         newTicket.setCreatedAt(LocalDateTime.now());
 
         return ticketRepository.save(newTicket);

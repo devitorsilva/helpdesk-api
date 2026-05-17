@@ -27,4 +27,6 @@ public class CreateTicketRequest {
     @NotBlank(message = "Requester name is required")
     @Email(message = "Requester email must be valid")
     private String requesterEmail;
+
+    private String assignedTo;
 }
