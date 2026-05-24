@@ -1,6 +1,7 @@
 package com.vitorsilva.helpdesk_api.service;
 
 import com.vitorsilva.helpdesk_api.dto.CreateTicketRequest;
+import com.vitorsilva.helpdesk_api.dto.TicketResponse;
 import com.vitorsilva.helpdesk_api.dto.UpdateTicketRequest;
 import com.vitorsilva.helpdesk_api.entity.Ticket;
 import com.vitorsilva.helpdesk_api.enums.TicketPriority;
@@ -9,11 +10,9 @@ import com.vitorsilva.helpdesk_api.exception.ResourceNotFoundException;
 import com.vitorsilva.helpdesk_api.repository.TicketRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 @Service
 public class TicketService {
@@ -24,7 +23,7 @@ public class TicketService {
         this.ticketRepository = ticketRepository;
     }
 
-    public Ticket create(CreateTicketRequest request) {
+    public TicketResponse create(CreateTicketRequest request) {
         Ticket newTicket = new Ticket();
         newTicket.setTitle(request.getTitle());
         newTicket.setDescription(request.getDescription());
@@ -33,34 +32,43 @@ public class TicketService {
         newTicket.setRequesterName(request.getRequesterName());
         newTicket.setRequesterEmail(request.getRequesterEmail());
         newTicket.setStatus(TicketStatus.OPEN);
-        newTicket.setStatusOrder(newTicket.getStatusOrder());
+        newTicket.setStatusOrder(newTicket.getStatus().getOrder());
         newTicket.setAssignedTo(request.getAssignedTo());
         newTicket.setCreatedAt(LocalDateTime.now());
 
-        return ticketRepository.save(newTicket);
+        return toResponse(ticketRepository.save(newTicket));
     }
 
     public Ticket findById(Long id){
         return ticketRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Ticket not found with id:" + id));
     }
 
-    public Page<Ticket> findAllByFilter(TicketStatus status, TicketPriority priority, Pageable pageable) {
-        if(status != null && priority != null){
-            return ticketRepository.findAllByStatusAndPriority(status,priority,pageable);
-        }
-
-        if(status != null){
-            return ticketRepository.findAllByStatus(status,pageable);
-        }
-
-        if(priority != null){
-            return ticketRepository.findAllByPriority(priority,pageable);
-        }
-
-        return ticketRepository.findAll(pageable);
+    public TicketResponse findResponseById(Long id) {
+        return toResponse(this.findById(id));
     }
 
-    public Ticket update(Long id, UpdateTicketRequest updateTicketRequest){
+    public Page<TicketResponse> findAllByFilter(TicketStatus status, TicketPriority priority, Pageable pageable) {
+        Page<Ticket> ticketPage;
+
+        if (status != null && priority != null) {
+            ticketPage = ticketRepository.findAllByStatusAndPriority(status, priority, pageable);
+        } else if (status != null) {
+            ticketPage = ticketRepository.findAllByStatus(status, pageable);
+        } else if (priority != null) {
+            ticketPage = ticketRepository.findAllByPriority(priority, pageable);
+        } else {
+            ticketPage = ticketRepository.findAll(pageable);
+        }
+
+        return ticketPage.map(this::toResponse);
+    }
+
+    public Page<TicketResponse> findAllByTerm(String term, Pageable pageable){
+        Page<Ticket> ticketPage = ticketRepository.findAllByTerm(term, pageable);
+        return ticketPage.map(this::toResponse);
+    }
+
+    public TicketResponse update(Long id, UpdateTicketRequest updateTicketRequest){
         Ticket ticket = this.findById(id);
         if(updateTicketRequest.getDescription() != null){
             ticket.setDescription(updateTicketRequest.getDescription());
@@ -82,11 +90,27 @@ public class TicketService {
 
         ticket.setUpdatedAt(LocalDateTime.now());
 
-        return ticketRepository.save(ticket);
+        return toResponse(ticketRepository.save(ticket));
     }
 
     public void delete(Long id){
         Ticket ticket = this.findById(id);
         ticketRepository.delete(ticket);
+    }
+
+    private TicketResponse toResponse(Ticket ticket) {
+        TicketResponse response = new TicketResponse();
+        response.setId(ticket.getId());
+        response.setTitle(ticket.getTitle());
+        response.setDescription(ticket.getDescription());
+        response.setStatus(ticket.getStatus() != null ? ticket.getStatus().name() : null);
+        response.setPriority(ticket.getPriority() != null ? ticket.getPriority().name() : null);
+        response.setRequesterName(ticket.getRequesterName());
+        response.setRequesterEmail(ticket.getRequesterEmail());
+        response.setAssignedTo(ticket.getAssignedTo());
+        response.setCreatedAt(ticket.getCreatedAt());
+        response.setUpdatedAt(ticket.getUpdatedAt());
+
+        return response;
     }
 }

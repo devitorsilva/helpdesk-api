@@ -2,18 +2,13 @@ package com.vitorsilva.helpdesk_api.entity;
 
 import com.vitorsilva.helpdesk_api.enums.TicketPriority;
 import com.vitorsilva.helpdesk_api.enums.TicketStatus;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.EnumType;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "tickets")
@@ -41,5 +36,8 @@ public class Ticket {
     String assignedTo;
     LocalDateTime createdAt;
     LocalDateTime updatedAt;
+
+    @OneToMany(mappedBy = "ticket", fetch = FetchType.LAZY)
+    private List<TicketComment> comments;
 
 }

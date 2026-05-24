@@ -2,85 +2,85 @@
 
 ![Java 17](https://img.shields.io/badge/Java-17-007396?logo=openjdk&logoColor=white)
 ![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.5-6DB33F?logo=springboot&logoColor=white)
-![REST API](https://img.shields.io/badge/API-REST-0A66C2)
-![H2](https://img.shields.io/badge/Database-H2-1E4C8F)
+![PostgreSQL](https://img.shields.io/badge/Database-PostgreSQL-4169E1?logo=postgresql&logoColor=white)
+![Swagger](https://img.shields.io/badge/OpenAPI-Swagger-85EA2D?logo=swagger&logoColor=black)
+![Docker](https://img.shields.io/badge/Docker-Local_Infra-2496ED?logo=docker&logoColor=white)
 
-API REST de helpdesk construída com Spring Boot para gestão de tickets.
+API REST de helpdesk para gestao de tickets e comentarios.
 
 ## Stack
 
 - Java 17
 - Spring Boot
 - Spring Web
-- Spring Data JPA
+- Spring Data JPA / Hibernate
 - Bean Validation
-- H2 Database
+- PostgreSQL
+- Swagger / OpenAPI
+- Docker
 
 ## Funcionalidades
 
 - Criar ticket
 - Buscar ticket por id
 - Listar tickets com filtro por status e prioridade
-- Paginação
-- Ordenação por colunas
-- Ordenação de negócio para prioridade e status
-- Atualização parcial com `PATCH`
-- Exclusão de ticket
+- Paginacao
+- Ordenacao por colunas
+- Ordenacao de negocio para prioridade e status
+- Busca textual por titulo ou descricao
+- Atualizacao parcial com `PATCH`
+- Exclusao de ticket
+- Criacao e listagem de comentarios por ticket
 - Tratamento global de erros
-- Seed local com `data.sql`
+- Documentacao Swagger
 
-## Endpoints
+## Endpoints principais
 
 - `POST /tickets`
 - `GET /tickets/{id}`
-- `GET /tickets?status=OPEN&priority=HIGH&page=0&size=10&sort=title,asc`
+- `GET /tickets`
+- `GET /tickets/search?term=login&page=0&size=10`
 - `PATCH /tickets/{id}`
 - `DELETE /tickets/{id}`
+- `POST /tickets/{ticketId}/comments`
+- `GET /tickets/{ticketId}/comments`
 
 ## Como rodar
 
-```bash
-./mvnw spring-boot:run
+### Infra local
+
+PostgreSQL:
+
+```powershell
+docker run --name helpdesk-postgres -e POSTGRES_DB=helpdesk -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d postgres:16
 ```
 
-No Windows:
+RabbitMQ:
+
+```powershell
+docker run --name helpdesk-rabbitmq -p 5672:5672 -p 15672:15672 -d rabbitmq:3-management
+```
+
+### Aplicacao
 
 ```powershell
 .\mvnw.cmd spring-boot:run
 ```
 
-API disponível em:
+API:
 
 - `http://localhost:8080`
 
-## Exemplos
+Swagger:
 
-### Criar ticket
+- `http://localhost:8080/swagger-ui/index.html`
 
-```json
-{
-  "title": "Erro no login do painel",
-  "description": "O utilizador nao consegue aceder ao painel administrativo.",
-  "priority": "HIGH",
-  "requesterName": "Vitor Silva",
-  "requesterEmail": "vitor@email.com",
-  "assignedTo": "Ana Souza"
-}
-```
+RabbitMQ UI:
 
-### Atualizar ticket
+- `http://localhost:15672`
 
-```json
-{
-  "status": "IN_PROGRESS",
-  "priority": "MEDIUM",
-  "assignedTo": "Ana Souza"
-}
-```
+## Observacoes
 
-## Observações
-
-- A aplicação usa H2 em memória para desenvolvimento.
-- Ao subir a aplicação, o `data.sql` carrega tickets de exemplo automaticamente.
-- `priorityOrder` e `statusOrder` são usados para suportar ordenação de negócio.
-- O CORS está liberado para `http://localhost:5173`.
+- `priorityOrder` e `statusOrder` suportam ordenacao de negocio.
+- `TicketResponse` e `TicketCommentResponse` evitam loop de serializacao.
+- O projeto esta sendo usado como base de estudo para JPA/Hibernate, testes, SQL e mensageria.
