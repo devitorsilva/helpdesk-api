@@ -69,7 +69,12 @@ public class TicketController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete ticket")
-    public void delete(@PathVariable Long id){
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Ticket deleted successfully"),
+            @ApiResponse(responseCode = "404", description = "Ticket not found")
+    })
+    public ResponseEntity<Void> delete(@PathVariable Long id){
         ticketService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }
