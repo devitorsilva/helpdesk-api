@@ -1,11 +1,14 @@
 package com.vitorsilva.helpdesk_api.service;
 
 import com.vitorsilva.helpdesk_api.dto.CreateTicketRequest;
+import com.vitorsilva.helpdesk_api.dto.TicketResponse;
 import com.vitorsilva.helpdesk_api.dto.UpdateTicketRequest;
 import com.vitorsilva.helpdesk_api.entity.Ticket;
 import com.vitorsilva.helpdesk_api.enums.TicketPriority;
 import com.vitorsilva.helpdesk_api.enums.TicketStatus;
+import com.vitorsilva.helpdesk_api.event.TicketEvent;
 import com.vitorsilva.helpdesk_api.exception.ResourceNotFoundException;
+import com.vitorsilva.helpdesk_api.messaging.TicketEventPublisher;
 import com.vitorsilva.helpdesk_api.repository.TicketRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,6 +30,9 @@ class TicketServiceTest {
 
     @InjectMocks
     private TicketService ticketService;
+
+    @Mock
+    private TicketEventPublisher ticketEventPublisher;
 
     @Test
     void shouldFindTicketById() {
@@ -97,14 +103,15 @@ class TicketServiceTest {
 
         when(ticketRepository.save(any(Ticket.class))).thenReturn(savedTicket);
 
-        Ticket result = ticketService.create(request);
+        TicketResponse result = ticketService.create(request);
 
         assertNotNull(result);
         assertEquals(1L, result.getId());
         assertEquals("Need new password to access ERP", result.getTitle());
-        assertEquals(TicketPriority.HIGH, result.getPriority());
+        assertEquals(TicketPriority.HIGH.toString(), result.getPriority());
 
         verify(ticketRepository).save(any(Ticket.class));
+        verify(ticketEventPublisher).publishTicketCreated(any(TicketEvent.class));
     }
 
     @Test
@@ -131,16 +138,17 @@ class TicketServiceTest {
         when(ticketRepository.findById(1L)).thenReturn(Optional.of(existingTicket));
         when(ticketRepository.save(any(Ticket.class))).thenReturn(updatedTicket);
 
-        Ticket result = ticketService.update(1L, request);
+        TicketResponse result = ticketService.update(1L, request);
 
         assertNotNull(result);
         assertEquals("Updating my title request", result.getTitle());
-        assertEquals(TicketPriority.MEDIUM, result.getPriority());
-        assertEquals(TicketStatus.IN_PROGRESS, result.getStatus());
+        assertEquals(TicketPriority.MEDIUM.toString(), result.getPriority());
+        assertEquals(TicketStatus.IN_PROGRESS.toString(), result.getStatus());
         assertEquals("Vitor Silva", result.getAssignedTo());
 
         verify(ticketRepository).findById(1L);
         verify(ticketRepository).save(any(Ticket.class));
+        verify(ticketEventPublisher, never()).publishTicketResolved(any(TicketEvent.class));
     }
 
     @Test
@@ -158,6 +166,7 @@ class TicketServiceTest {
         });
 
         verify(ticketRepository, never()).save(any(Ticket.class));
+        verify(ticketEventPublisher, never()).publishTicketResolved(any(TicketEvent.class));
     }
 
     @Test
@@ -184,5 +193,6 @@ class TicketServiceTest {
 
         assertEquals(TicketStatus.OPEN, capturedTicket.getStatus());
         assertEquals(TicketStatus.OPEN.getOrder(), capturedTicket.getStatusOrder());
+        verify(ticketEventPublisher).publishTicketCreated(any(TicketEvent.class));
     }
 }

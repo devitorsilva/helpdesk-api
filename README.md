@@ -3,6 +3,7 @@
 ![Java 17](https://img.shields.io/badge/Java-17-007396?logo=openjdk&logoColor=white)
 ![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.5-6DB33F?logo=springboot&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/Database-PostgreSQL-4169E1?logo=postgresql&logoColor=white)
+![RabbitMQ](https://img.shields.io/badge/Messaging-RabbitMQ-FF6600?logo=rabbitmq&logoColor=white)
 ![Swagger](https://img.shields.io/badge/OpenAPI-Swagger-85EA2D?logo=swagger&logoColor=black)
 ![Docker](https://img.shields.io/badge/Docker-Local_Infra-2496ED?logo=docker&logoColor=white)
 
@@ -16,6 +17,7 @@ API REST de helpdesk para gestao de tickets e comentarios.
 - Spring Data JPA / Hibernate
 - Bean Validation
 - PostgreSQL
+- RabbitMQ
 - Swagger / OpenAPI
 - Docker
 
@@ -31,6 +33,9 @@ API REST de helpdesk para gestao de tickets e comentarios.
 - Atualizacao parcial com `PATCH`
 - Exclusao de ticket
 - Criacao e listagem de comentarios por ticket
+- Publicacao de evento quando ticket e criado
+- Publicacao de evento quando ticket e resolvido
+- Listener para envio de e-mail simulado
 - Tratamento global de erros
 - Documentacao Swagger
 
@@ -83,4 +88,5 @@ RabbitMQ UI:
 
 - `priorityOrder` e `statusOrder` suportam ordenacao de negocio.
 - `TicketResponse` e `TicketCommentResponse` evitam loop de serializacao.
+- RabbitMQ e usado para publicar eventos de criacao e resolucao de ticket.
 - O projeto esta sendo usado como base de estudo para JPA/Hibernate, testes, SQL e mensageria.
